@@ -1,25 +1,19 @@
-version: 2.1
-
+ymlversion: 2.1
 jobs:
-  boj-test:
+  mirror:
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/base:stable
     steps:
       - checkout
       - run:
-          name: Run BOJ solutions
+          name: Push to organization repo
           command: |
-            for file in problems/*.py; do
-              name=$(basename $file .py)
-              if [ -f tests/$name.txt ]; then
-                echo "▶ Running $name"
-                python $file < tests/$name.txt
-              else
-                echo "⚠️ No test for $name"
-              fi
-            done
-
+            git config --global user.name "kazakuteng"
+            git config --global user.email "poo0404@naver.com"
+            git remote add org https://x-access-token:${ORG_PUSH_PAT}@github.com/SSAFY-15/chango_study.git
+            git push org main --force
 workflows:
-  boj-workflow:
+  version: 2
+  mirror-to-org:
     jobs:
-      - boj-test
+      - mirror
