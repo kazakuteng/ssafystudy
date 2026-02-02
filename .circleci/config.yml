@@ -1,0 +1,25 @@
+version: 2.1
+
+jobs:
+  boj-test:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Run BOJ solutions
+          command: |
+            for file in problems/*.py; do
+              name=$(basename $file .py)
+              if [ -f tests/$name.txt ]; then
+                echo "▶ Running $name"
+                python $file < tests/$name.txt
+              else
+                echo "⚠️ No test for $name"
+              fi
+            done
+
+workflows:
+  boj-workflow:
+    jobs:
+      - boj-test
